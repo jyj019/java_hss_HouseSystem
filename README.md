@@ -1,0 +1,10 @@
+# java_hss_HouseSystem
+这个项目由maven工具架构，采用了hss的框架搭配，即hibernate，spring，spring mvc。
+
+hibernate在spring的配置文件中完成配置Hibernate事务管理器和其他关键项的配置，通过setter注入 注入了SessionFactory对象，采用DBCP2连接池。
+
+spring整合了具体架构并提供了大量的拓展接口,采用IOC模式，通过依赖注入，无需自行创建对象或管理它们的依赖关系，依赖关系将会被自动注入到需要的地方，大量降低代码不同层的耦合。也通过AOP模式的横切关注功能，能方便的把遍布应用各个角落的功能分离出来形成可重用的组件。
+
+spring mvc采用配置前端控制器(门面模式)的方式配置前端界面，降低了与servlet的耦合。
+
+
