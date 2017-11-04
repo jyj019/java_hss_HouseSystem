@@ -1,0 +1,13 @@
+eclipse.preferences.version=1
+encoding//src/main/java=UTF-8
+encoding//src/main/java/com/qfedu/controller/HomeController.java=UTF-8
+encoding//src/main/java/com/qfedu/persistence=GBK
+encoding//src/main/java/com/qfedu/persistence/impl=GBK
+encoding//src/main/java/com/qfedu/persistence/impl/BaseDaoAdapter.java=GBK
+encoding//src/main/java/com/qfedu/util/CommonUtil.java=UTF-8
+encoding//src/main/java/com/qfedu/util/HibernateUtil.java=UTF-8
+encoding//src/main/resources=UTF-8
+encoding//src/test/java=UTF-8
+encoding//src/test/resources=UTF-8
+encoding/<project>=UTF-8
+encoding/House_create_and_init.sql=UTF-8

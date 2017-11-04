@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<!-- 基于注解配置哪些对象要纳入IoC容器的管理(哪些东西) -->
+	<context:component-scan base-package="com.jyj019">
+		<context:exclude-filter type="annotation" 
+				expression="org.springframework.stereotype.Controller"/>
+		<context:exclude-filter type="annotation" 
+				expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+	<context:annotation-config />
+	
+	<!-- 通过自动生成代理实现AOP的功能  aspectjrt/aspectjweaver-->
+	<!--  <aop:aspectj-autoproxy />-->
+	
+	<!-- 配置数据库连接池(DBCP2) -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" 
+			destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/house"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+        <property name="initialSize" value="10" />
+        <property name="maxTotal" value="100" />
+        <property name="maxWaitMillis" value="5000" />
+    </bean>
+	
+	<!-- 配置MyBatis的SQLSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:mybatis-config.xml" />
+	</bean>
+	
+	<!-- 配置MapperScannerConfigurer对象 -->
+	<!-- 该对象会将指定包下的Mapper接口自动生成实现类并纳入IoC容器的管理 -->
+	<!-- 有了这个配置以后就可以将Mapper对象依赖注入到业务对象中 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+		<property name="basePackage" value="com.jyj019.hrs.mapper" />
+	</bean>
+	
+	<!-- 配置Hibernate的SessionFactory(注入连接池)-->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="com.jyj019.domain" />
+		<property name="hibernateProperties">
+			<value>
+                hibernate.dialect=org.hibernate.dialect.MySQL57Dialect
+                hibernate.show_sql=true
+                hibernate.format_sql=true
+                javax.persistence.validation.mode=none<!-- hibernate储存时不使用validation注解 -->
+            </value>
+		</property>
+	</bean>
+	
+	<!-- 配置Spring提供的Hibernate事务管理器 -->
+	<bean id="transactionManager"
+	 		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<!-- 通过setter注入 注入了SessionFactory对象 -->
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 配置使用声明式事务 @transactional spring的业务方法的注解-->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+</beans>
